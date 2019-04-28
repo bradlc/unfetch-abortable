@@ -36,6 +36,9 @@ export default function(url, options) {
 
 		request.onerror = reject;
 
+		if (options.signal) options.signal.onabort = () => { request.abort(); };
+		request.onabort = () => reject(new DOMException('The user aborted a request.', 'AbortError'));
+
 		request.withCredentials = options.credentials=='include';
 
 		for (const i in options.headers) {
@@ -45,3 +48,5 @@ export default function(url, options) {
 		request.send(options.body || null);
 	});
 }
+
+export { default as AbortController } from './AbortController.mjs';
